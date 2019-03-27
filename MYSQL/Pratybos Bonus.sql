@@ -1,6 +1,10 @@
-SELECT `news`.`text` AS 'Article', `news`.`date` AS 'Publish Date', `comments`.`text` AS 'Comment', MAX(`comments`.`date`)AS 'Comment Date'
-FROM `comments`
-JOIN `news` ON `news`.`newsId`=`comments`.`newsId`
-GROUP BY `news`.`text`, `news`.`date`, `comments`.`text`
-ORDER BY `news`.`date` DESC 
-LIMIT 10;
+SELECT `news`.`text` AS 'News', `news`.`date` AS 'Publish date', 
+`comments`.`text` AS 'Most Recent Comment', `comments`.`date` AS 'Comment Date' 
+FROM `news`
+JOIN (
+    SELECT `text`, MAX(`newsId`) as `newsId`, `date`
+    FROM `comments` 
+    GROUP BY `newsId`
+)`comments` ON `news`.`newsId`=`comments`.`newsId`
+WHERE `comments`.`text` IS NOT NULL 
+ORDER BY `news`.`date` DESC LIMIT 10
